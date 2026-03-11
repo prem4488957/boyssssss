@@ -1,0 +1,1034 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Retail Demand &amp; Price Forecasting System</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .glass-input {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .gradient-btn {
+      background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%);
+      background-size: 200% 200%;
+      animation: gradient-shift 3s ease infinite;
+      transition: all 0.3s ease;
+    }
+
+    .gradient-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 50px -10px rgba(99, 102, 241, 0.6);
+    }
+
+    .gradient-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+    }
+
+    @keyframes float-reverse {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(20px) rotate(-5deg); }
+    }
+
+    .floating-shape {
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .floating-shape:nth-child(2) {
+      animation: float-reverse 10s ease-in-out infinite;
+    }
+
+    .floating-shape:nth-child(3) {
+      animation: float 12s ease-in-out infinite;
+    }
+
+    .slide-in {
+      animation: slideIn 0.5s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .pulse-glow {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.5); }
+    }
+
+    .nav-link {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #6366F1, #EC4899);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover:after {
+      width: 100%;
+    }
+
+    .nav-link.active:after {
+      width: 100%;
+    }
+
+    .stat-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.4);
+    }
+
+    .chart-container {
+      position: relative;
+      height: 300px;
+      width: 100%;
+    }
+
+    .mini-chart {
+      position: relative;
+      height: 200px;
+      width: 100%;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    .example-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.5);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(139, 92, 246, 0.7);
+    }
+
+    select option {
+      background: #0f0c29;
+      color: white;
+    }
+
+    .tabs-container {
+      display: flex;
+      gap: 2px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      padding: 10px 16px;
+      text-white/70 transition-all;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      border-bottom-color: #6366F1;
+      text-white;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full overflow-auto" style="background: linear-gradient(135deg, #0f0c29 0%, #1a1a3a 50%, #0f0c29 100%);">
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+   <div class="floating-shape absolute top-20 left-10 w-72 h-72 rounded-full opacity-20" style="background: radial-gradient(circle, #6366F1 0%, transparent 70%);"></div>
+   <div class="floating-shape absolute top-1/3 right-5 w-96 h-96 rounded-full opacity-15" style="background: radial-gradient(circle, #EC4899 0%, transparent 70%);"></div>
+   <div class="floating-shape absolute bottom-20 left-1/4 w-80 h-80 rounded-full opacity-20" style="background: radial-gradient(circle, #8B5CF6 0%, transparent 70%);"></div>
+   <div class="floating-shape absolute bottom-1/3 right-1/3 w-60 h-60 rounded-full opacity-15" style="background: radial-gradient(circle, #06B6D4 0%, transparent 70%);"></div>
+  </div>
+  <div class="relative w-full min-h-full z-10">
+   <nav class="glass-card sticky top-0 z-50 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-3">
+       <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-pink-500 flex items-center justify-center pulse-glow">
+        <svg class="w-6 h-6 text-white" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+         <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+       </div><span class="text-white font-bold text-lg hidden sm:inline">Global Forecasting</span>
+      </div>
+      <div class="flex gap-2 sm:gap-8 text-xs sm:text-base overflow-x-auto">
+       <button class="nav-link active text-white/80 hover:text-white transition-colors whitespace-nowrap" data-section="home">Home</button> <button class="nav-link text-white/80 hover:text-white transition-colors whitespace-nowrap" data-section="demand">Demand</button> <button class="nav-link text-white/80 hover:text-white transition-colors whitespace-nowrap" data-section="prices">Prices</button> <button class="nav-link text-white/80 hover:text-white transition-colors whitespace-nowrap" data-section="crisis">Crisis</button> <button class="nav-link text-white/80 hover:text-white transition-colors whitespace-nowrap" data-section="how-it-works">How It Works</button>
+      </div>
+     </div>
+    </div>
+   </nav>
+   <section id="home" class="section active">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+     <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div class="slide-in">
+       <h1 id="app-title" class="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">Global Demand <span class="bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">Forecasting</span></h1>
+       <p id="subtitle" class="text-white/70 text-lg mb-8 leading-relaxed">Predict product demand across global markets with AI. Analyze seasonal trends, pricing strategies, and crisis impacts. Make data-driven decisions with real-time forecasting and international price intelligence.</p>
+       <div class="flex gap-4 flex-wrap">
+        <button class="gradient-btn px-8 py-3 rounded-xl text-white font-semibold" onclick="switchSection('demand')"> Start Forecasting </button> <button class="glass-card px-8 py-3 rounded-xl text-white font-semibold hover:bg-white/10 transition-all" onclick="switchSection('prices')"> Compare Prices </button>
+       </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4 slide-in">
+       <div class="glass-card rounded-2xl p-6 stat-card">
+        <div class="text-3xl mb-2">
+         🌍
+        </div>
+        <h3 class="text-white font-semibold mb-2">Global Reach</h3>
+        <p class="text-white/60 text-sm">6 countries, real prices</p>
+       </div>
+       <div class="glass-card rounded-2xl p-6 stat-card">
+        <div class="text-3xl mb-2">
+         📊
+        </div>
+        <h3 class="text-white font-semibold mb-2">AI Powered</h3>
+        <p class="text-white/60 text-sm">ML predictions</p>
+       </div>
+       <div class="glass-card rounded-2xl p-6 stat-card">
+        <div class="text-3xl mb-2">
+         ⚠️
+        </div>
+        <h3 class="text-white font-semibold mb-2">Crisis Ready</h3>
+        <p class="text-white/60 text-sm">Impact analysis</p>
+       </div>
+       <div class="glass-card rounded-2xl p-6 stat-card">
+        <div class="text-3xl mb-2">
+         🚀
+        </div>
+        <h3 class="text-white font-semibold mb-2">Real-Time</h3>
+        <p class="text-white/60 text-sm">Instant insights</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section id="demand" class="section">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+     <div class="slide-in mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Demand Forecast Generator</h2>
+      <p class="text-white/60 text-lg">AI-powered predictions with weekly and monthly analysis</p>
+     </div>
+     <div class="grid md:grid-cols-3 gap-8">
+      <div class="md:col-span-1">
+       <div class="glass-card rounded-2xl p-8 space-y-6">
+        <div>
+         <label class="block text-white/80 text-sm font-medium mb-3">Product Category</label> <select id="demand-category-select" class="glass-input w-full px-4 py-3 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all cursor-pointer"> <option value="electronics">🖥️ Electronics</option> <option value="groceries">🛒 Groceries</option> <option value="clothing">👕 Clothing</option> <option value="appliances">🏠 Appliances</option> </select>
+        </div>
+        <div>
+         <label class="block text-white/80 text-sm font-medium mb-3">Historical Sales (units)</label> <input id="demand-sales-input" type="number" class="glass-input w-full px-4 py-3 rounded-lg text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all" placeholder="e.g., 1500" value="1500">
+        </div>
+        <div>
+         <label class="block text-white/80 text-sm font-medium mb-3">Season</label> <select id="demand-season-select" class="glass-input w-full px-4 py-3 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all cursor-pointer"> <option value="summer">☀️ Summer</option> <option value="winter">❄️ Winter</option> <option value="festival">🎉 Festival</option> </select>
+        </div>
+        <div class="space-y-3">
+         <label class="flex items-center gap-3 cursor-pointer group"> <input id="demand-promotion-check" type="checkbox" class="w-4 h-4 rounded"> <span class="text-white/80 text-sm font-medium group-hover:text-white transition-colors">Active Promotion</span> </label> <label class="flex items-center gap-3 cursor-pointer group"> <input id="demand-holiday-check" type="checkbox" class="w-4 h-4 rounded"> <span class="text-white/80 text-sm font-medium group-hover:text-white transition-colors">Holiday/Sales Event</span> </label>
+        </div><button id="demand-predict-btn" class="gradient-btn w-full py-3 px-6 rounded-lg text-white font-semibold text-lg"> <span id="demand-predict-btn-text">Generate Forecast</span> </button>
+       </div>
+      </div>
+      <div class="md:col-span-2">
+       <div id="demand-results-container" class="hidden">
+        <div class="glass-card rounded-2xl p-8 space-y-8 slide-in">
+         <div class="grid grid-cols-3 gap-4">
+          <div class="text-center">
+           <div class="text-3xl font-bold text-indigo-400 mb-2" id="demand-forecast-value">
+            2,150
+           </div>
+           <p class="text-white/60 text-sm">This Week</p>
+          </div>
+          <div class="text-center">
+           <div class="text-3xl font-bold text-pink-400 mb-2" id="demand-month-value">
+            8,600
+           </div>
+           <p class="text-white/60 text-sm">This Month</p>
+          </div>
+          <div class="text-center">
+           <div class="text-3xl font-bold text-cyan-400 mb-2" id="demand-confidence-value">
+            94%
+           </div>
+           <p class="text-white/60 text-sm">Confidence</p>
+          </div>
+         </div>
+         <div>
+          <h3 class="text-white font-semibold mb-4">Weekly Forecast</h3>
+          <div class="chart-container">
+           <canvas id="demand-chart"></canvas>
+          </div>
+         </div>
+         <div>
+          <h3 class="text-white font-semibold mb-4">Weekly Breakdown</h3>
+          <div class="table-responsive">
+           <table class="w-full text-sm text-white/80">
+            <thead>
+             <tr class="border-b border-white/10">
+              <th class="text-left py-2 px-4">Week</th>
+              <th class="text-right py-2 px-4">Forecast</th>
+              <th class="text-right py-2 px-4">Confidence</th>
+             </tr>
+            </thead>
+            <tbody id="demand-table" class="divide-y divide-white/10">
+            </tbody>
+           </table>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div id="demand-placeholder-container" class="glass-card rounded-2xl p-12 text-center">
+        <div class="text-6xl mb-4">
+         📈
+        </div>
+        <p class="text-white/60 text-lg">Configure parameters and generate forecast to see results</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section id="examples" class="section">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+     <div class="slide-in mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Example Predictions</h2>
+      <p class="text-white/60 text-lg">Real-world scenarios and forecast predictions</p>
+     </div>
+     <div class="example-grid">
+      <div class="glass-card rounded-2xl p-6 slide-in">
+       <div class="flex items-start justify-between mb-4">
+        <div>
+         <h3 class="text-white font-semibold text-lg mb-1">🖥️ Gaming Laptop</h3>
+         <p class="text-white/60 text-sm">Electronics</p>
+        </div><span class="px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-300">+42%</span>
+       </div>
+       <div class="space-y-3 text-sm">
+        <div class="flex justify-between text-white/80">
+         <span>Base Demand:</span> <span class="font-semibold">800 units</span>
+        </div>
+        <div class="flex justify-between text-white/80">
+         <span>Holiday Boost:</span> <span class="font-semibold text-indigo-300">+336 units</span>
+        </div>
+        <div class="flex justify-between text-white/80">
+         <span>Promotion Impact:</span> <span class="font-semibold text-pink-300">+168 units</span>
+        </div>
+        <div class="pt-3 border-t border-white/10 flex justify-between text-white font-bold">
+         <span>Predicted Total:</span> <span class="text-indigo-400">1,304 units</span>
+        </div>
+       </div>
+       <div class="mt-4 flex gap-2">
+        <span class="px-2 py-1 rounded text-xs bg-indigo-500/30 text-indigo-200">Winter</span> <span class="px-2 py-1 rounded text-xs bg-purple-500/30 text-purple-200">Holiday</span>
+       </div>
+      </div>
+      <div class="glass-card rounded-2xl p-6 slide-in">
+       <div class="flex items-start justify-between mb-4">
+        <div>
+         <h3 class="text-white font-semibold text-lg mb-1">🍕 Frozen Pizza</h3>
+         <p class="text-white/60 text-sm">Groceries</p>
+        </div><span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-300">+28%</span>
+       </div>
+       <div class="space-y-3 text-sm">
+        <div class="flex justify-between text-white/80">
+         <span>Base Demand:</span> <span class="font-semibold">3,200 units</span>
+        </div>
+        <div class="flex justify-between text-white/80">
+         <span>Weekend Effect:</span> <span class="font-semibold text-indigo-300">+640 units</span>
+        </div>
+        <div class="flex justify-between text-white/80">
+         <span>Seasonal:</span> <span class="font-semibold text-pink-300">+256 units</span>
+        </div>
+        <div class="pt-3 border-t border-white/10 flex justify-between text-white font-bold">
+         <span>Predicted Total:</span> <span class="text-indigo-400">4,096 units</span>
+        </div>
+       </div>
+       <div class="mt-4 flex gap-2">
+        <span class="px-2 py-1 rounded text-xs bg-indigo-500/30 text-indigo-200">Summer</span> <span class="px-2 py-1 rounded text-xs bg-cyan-500/30 text-cyan-200">Stable</span>
+       </div>
+      </div>
+      <div class="glass-card rounded-2xl p-6 slide-in">
+       <div class="flex items-start justify-between mb-4">
+        <div>
+         <h3 class="text-white font-semibold text-lg mb-1">👕 Summer T-Shirt</h3>
+         <p class="text-white/60 text-sm">Clothing</p>
+        </div><span class="px-3 py-1 rounded-full text-xs font-medium bg-orange-500/20 text-orange-300">+55%</span>
+       </div>
+       <div class="space-y-3 text-sm">
+        <div class="flex justify-between text-white/80">
+         <span>Base Demand:</span> <span class="font-semibold">1,200 units</span>
+        </div>
+        <div class="flex justify-between text-white/80">
+         <span>Seasonal Surge:</span> <span class="font-semibold text-indigo-300">+480 units</span>
+        </div>
+        <div class="flex justify-between text-white/80">
+         <span>Promotion Boost:</span> <span class="font-semibold text-pink-300">+240 units</span>
+        </div>
+        <div class="pt-3 border-t border-white/10 flex justify-between text-white font-bold">
+         <span>Predicted Total:</span> <span class="text-indigo-400">1,920 units</span>
+        </div>
+       </div>
+       <div class="mt-4 flex gap-2">
+        <span class="px-2 py-1 rounded text-xs bg-indigo-500/30 text-indigo-200">Summer</span> <span class="px-2 py-1 rounded text-xs bg-orange-500/30 text-orange-200">Promo</span>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section id="prices" class="section">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+     <div class="slide-in mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Global Price Comparison</h2>
+      <p class="text-white/60 text-lg">Compare product prices across 6 major markets in real currency and USD</p>
+     </div>
+     <div class="mb-8"><label class="block text-white/80 text-sm font-medium mb-4">Select Product</label>
+      <div class="flex gap-2 flex-wrap"><button class="price-product-btn glass-card px-4 py-2 rounded-lg text-white/70 hover:text-white transition-all active" data-product="iphone">📱 iPhone</button> <button class="price-product-btn glass-card px-4 py-2 rounded-lg text-white/70 hover:text-white transition-all" data-product="laptop">💻 Laptop</button> <button class="price-product-btn glass-card px-4 py-2 rounded-lg text-white/70 hover:text-white transition-all" data-product="rice">🍚 Rice (kg)</button> <button class="price-product-btn glass-card px-4 py-2 rounded-lg text-white/70 hover:text-white transition-all" data-product="milk">🥛 Milk (L)</button> <button class="price-product-btn glass-card px-4 py-2 rounded-lg text-white/70 hover:text-white transition-all" data-product="shoes">👟 Shoes</button>
+      </div>
+     </div>
+     <div class="glass-card rounded-2xl p-8 space-y-8">
+      <div>
+       <h3 class="text-white font-semibold mb-4">Price by Country (USD)</h3>
+       <div class="chart-container">
+        <canvas id="price-chart"></canvas>
+       </div>
+      </div>
+      <div>
+       <h3 class="text-white font-semibold mb-4">Detailed Price Table</h3>
+       <div class="table-responsive">
+        <table class="w-full text-sm text-white/80">
+         <thead>
+          <tr class="border-b border-white/10">
+           <th class="text-left py-3 px-4">Country</th>
+           <th class="text-right py-3 px-4">Local Price</th>
+           <th class="text-right py-3 px-4">Currency</th>
+           <th class="text-right py-3 px-4">USD</th>
+           <th class="text-right py-3 px-4">vs USA</th>
+          </tr>
+         </thead>
+         <tbody id="price-table" class="divide-y divide-white/10">
+         </tbody>
+        </table>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section id="crisis" class="section">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+     <div class="slide-in mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Crisis Impact Analysis</h2>
+      <p class="text-white/60 text-lg">How global crises affect demand and pricing patterns</p>
+     </div>
+     <div class="mb-8"><label class="block text-white/80 text-sm font-medium mb-4">Select Crisis Event</label>
+      <div class="flex gap-2 flex-wrap"><button class="crisis-btn glass-card px-4 py-2 rounded-lg text-white/70 hover:text-white transition-all active" data-crisis="covid">🦠 COVID-19</button> <button class="crisis-btn glass-card px-4 py-2 rounded-lg text-white/70 hover:text-white transition-all" data-crisis="inflation">📈 Inflation Spike</button> <button class="crisis-btn glass-card px-4 py-2 rounded-lg text-white/70 hover:text-white transition-all" data-crisis="recession">📉 Recession</button> <button class="crisis-btn glass-card px-4 py-2 rounded-lg text-white/70 hover:text-white transition-all" data-crisis="supply">🚚 Supply Chain</button>
+      </div>
+     </div>
+     <div class="glass-card rounded-2xl p-8 space-y-8">
+      <div class="grid md:grid-cols-3 gap-4 mb-8">
+       <div class="text-center">
+        <div class="text-2xl font-bold text-indigo-400 mb-2" id="crisis-demand-change">
+         +45%
+        </div>
+        <p class="text-white/60 text-sm">Demand Impact</p>
+       </div>
+       <div class="text-center">
+        <div class="text-2xl font-bold text-pink-400 mb-2" id="crisis-price-change">
+         +28%
+        </div>
+        <p class="text-white/60 text-sm">Price Change</p>
+       </div>
+       <div class="text-center">
+        <div class="text-2xl font-bold text-cyan-400 mb-2" id="crisis-duration">
+         3 months
+        </div>
+        <p class="text-white/60 text-sm">Crisis Duration</p>
+       </div>
+      </div>
+      <div>
+       <h3 class="text-white font-semibold mb-4">Price Trend: Before &amp; After Crisis</h3>
+       <div class="chart-container">
+        <canvas id="crisis-chart"></canvas>
+       </div>
+      </div>
+      <div id="crisis-details" class="glass-card rounded-xl p-6 bg-white/5"></div>
+     </div>
+    </div>
+   </section>
+   <section id="how-it-works" class="section">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+     <div class="slide-in mb-12">
+      <h2 id="how-it-works-title" class="text-3xl md:text-4xl font-bold text-white mb-4">How It Works</h2>
+      <p class="text-white/60 text-lg">Advanced AI techniques powering global demand and price forecasting</p>
+     </div>
+     <div class="grid md:grid-cols-2 gap-8">
+      <div class="glass-card rounded-2xl p-8 slide-in">
+       <div class="flex gap-4 mb-6">
+        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+         1
+        </div>
+        <div>
+         <h3 class="text-white font-semibold text-lg mb-2">Machine Learning Forecasting</h3>
+         <p class="text-white/70 text-sm">Our ML models analyze years of historical sales data to identify patterns and predict future demand with high accuracy.</p>
+        </div>
+       </div>
+      </div>
+      <div class="glass-card rounded-2xl p-8 slide-in">
+       <div class="flex gap-4 mb-6">
+        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+         2
+        </div>
+        <div>
+         <h3 class="text-white font-semibold text-lg mb-2">Time Series Analysis</h3>
+         <p class="text-white/70 text-sm">We use advanced time-series algorithms to detect trends, cycles, and anomalies in sales data across different time periods.</p>
+        </div>
+       </div>
+      </div>
+      <div class="glass-card rounded-2xl p-8 slide-in">
+       <div class="flex gap-4 mb-6">
+        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-pink-500 to-cyan-500 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+         3
+        </div>
+        <div>
+         <h3 class="text-white font-semibold text-lg mb-2">Seasonal Trend Detection</h3>
+         <p class="text-white/70 text-sm">Automatically identifies seasonal patterns, peaks, and troughs to adjust predictions based on time of year and market conditions.</p>
+        </div>
+       </div>
+      </div>
+      <div class="glass-card rounded-2xl p-8 slide-in">
+       <div class="flex gap-4 mb-6">
+        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500 to-indigo-500 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+         4
+        </div>
+        <div>
+         <h3 class="text-white font-semibold text-lg mb-2">Promotional Event Analysis</h3>
+         <p class="text-white/70 text-sm">Calculates promotional effectiveness and sales event impact using historical performance data and market correlations.</p>
+        </div>
+       </div>
+      </div>
+      <div class="glass-card rounded-2xl p-8 slide-in">
+       <div class="flex gap-4 mb-6">
+        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+         5
+        </div>
+        <div>
+         <h3 class="text-white font-semibold text-lg mb-2">Crisis Impact Modeling</h3>
+         <p class="text-white/70 text-sm">Analyzes how global events (pandemics, recessions, supply disruptions) affect pricing and demand patterns worldwide.</p>
+        </div>
+       </div>
+      </div>
+      <div class="glass-card rounded-2xl p-8 slide-in">
+       <div class="flex gap-4 mb-6">
+        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500 to-pink-500 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+         6
+        </div>
+        <div>
+         <h3 class="text-white font-semibold text-lg mb-2">Global Price Intelligence</h3>
+         <p class="text-white/70 text-sm">Compares product prices across countries, adjusts for currency fluctuations, and identifies arbitrage opportunities.</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <footer class="glass-card mt-12 border-t border-white/10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-white/40 text-sm">
+     <p>Global Forecasting with Advanced Machine Learning • Powered by AI 🚀</p>
+    </div>
+   </footer>
+  </div>
+  <script>
+    const defaultConfig = {
+      app_title: 'Global Retail Demand & Price Forecasting System',
+      subtitle_text: 'Predict product demand across global markets with AI',
+      predict_button_text: 'Generate Forecast',
+      how_it_works_title: 'How It Works',
+      primary_color: '#6366F1',
+      secondary_color: '#8B5CF6',
+      accent_color: '#EC4899',
+      text_color: '#ffffff',
+      font_family: 'Space Grotesk',
+      font_size: 16
+    };
+
+    let demandChart = null;
+    let priceChart = null;
+    let crisisChart = null;
+
+    // Price data for global comparison
+    const priceData = {
+      iphone: {
+        product: 'iPhone 15 Pro',
+        usa: { local: 999, currency: 'USD', country: 'USA' },
+        india: { local: 89999, currency: 'INR', country: 'India', rate: 0.012 },
+        uk: { local: 899, currency: 'GBP', country: 'UK', rate: 1.27 },
+        japan: { local: 149800, currency: 'JPY', country: 'Japan', rate: 0.0068 },
+        germany: { local: 949, currency: 'EUR', country: 'Germany', rate: 1.1 },
+        brazil: { local: 4499, currency: 'BRL', country: 'Brazil', rate: 0.2 }
+      },
+      laptop: {
+        product: 'MacBook Pro 16"',
+        usa: { local: 2499, currency: 'USD', country: 'USA' },
+        india: { local: 249999, currency: 'INR', country: 'India', rate: 0.012 },
+        uk: { local: 2249, currency: 'GBP', country: 'UK', rate: 1.27 },
+        japan: { local: 449800, currency: 'JPY', country: 'Japan', rate: 0.0068 },
+        germany: { local: 2699, currency: 'EUR', country: 'Germany', rate: 1.1 },
+        brazil: { local: 12999, currency: 'BRL', country: 'Brazil', rate: 0.2 }
+      },
+      rice: {
+        product: 'Rice (per kg)',
+        usa: { local: 1.5, currency: 'USD', country: 'USA' },
+        india: { local: 50, currency: 'INR', country: 'India', rate: 0.012 },
+        uk: { local: 1.2, currency: 'GBP', country: 'UK', rate: 1.27 },
+        japan: { local: 500, currency: 'JPY', country: 'Japan', rate: 0.0068 },
+        germany: { local: 1.8, currency: 'EUR', country: 'Germany', rate: 1.1 },
+        brazil: { local: 4.5, currency: 'BRL', country: 'Brazil', rate: 0.2 }
+      },
+      milk: {
+        product: 'Fresh Milk (per liter)',
+        usa: { local: 3.5, currency: 'USD', country: 'USA' },
+        india: { local: 60, currency: 'INR', country: 'India', rate: 0.012 },
+        uk: { local: 1.6, currency: 'GBP', country: 'UK', rate: 1.27 },
+        japan: { local: 200, currency: 'JPY', country: 'Japan', rate: 0.0068 },
+        germany: { local: 0.85, currency: 'EUR', country: 'Germany', rate: 1.1 },
+        brazil: { local: 5.2, currency: 'BRL', country: 'Brazil', rate: 0.2 }
+      },
+      shoes: {
+        product: 'Running Shoes',
+        usa: { local: 120, currency: 'USD', country: 'USA' },
+        india: { local: 9999, currency: 'INR', country: 'India', rate: 0.012 },
+        uk: { local: 99, currency: 'GBP', country: 'UK', rate: 1.27 },
+        japan: { local: 15000, currency: 'JPY', country: 'Japan', rate: 0.0068 },
+        germany: { local: 115, currency: 'EUR', country: 'Germany', rate: 1.1 },
+        brazil: { local: 599, currency: 'BRL', country: 'Brazil', rate: 0.2 }
+      }
+    };
+
+    // Crisis data
+    const crisisData = {
+      covid: {
+        name: 'COVID-19 Pandemic',
+        icon: '🦠',
+        duration: '3-6 months',
+        demandChange: '+145%',
+        priceChange: '+35%',
+        affected: '🪲 Masks, 📦 Hand Sanitizer, 🍕 Groceries',
+        details: 'Unprecedented surge in demand for protective equipment and essential goods. Supply chain disruptions led to price increases. Online shopping demand surged by 300%. Remote work fueled demand for home office equipment.'
+      },
+      inflation: {
+        name: 'Inflation Spike',
+        icon: '📈',
+        duration: '8-12 months',
+        demandChange: '-22%',
+        priceChange: '+42%',
+        affected: '🍔 Food, ⚡ Energy, 🏠 Housing',
+        details: 'Rising commodity costs passed to consumers. Consumer purchasing power declined. Demand shifted to budget and value products. Grocery demand volatile due to price elasticity. Luxury goods demand dropped significantly.'
+      },
+      recession: {
+        name: 'Economic Recession',
+        icon: '📉',
+        duration: '6-12 months',
+        demandChange: '-35%',
+        priceChange: '-15%',
+        affected: '🏠 Electronics, 🛍️ Fashion, ✈️ Travel',
+        details: 'Consumer spending cuts across discretionary categories. Retailers cut prices to attract budget-conscious shoppers. Second-hand market boomed. Essential goods saw minimal demand change. Business investments delayed.'
+      },
+      supply: {
+        name: 'Supply Chain Disruption',
+        icon: '🚚',
+        duration: '4-8 months',
+        demandChange: '+18%',
+        priceChange: '+67%',
+        affected: '🖥️ Electronics, 🚗 Auto Parts, ⚙️ Industrial',
+        details: 'Semiconductor shortage drove electronics prices sky-high. Shipping costs tripled. Lead times extended dramatically. Demand remained strong but supply couldn\'t keep up. Companies stockpiled inventory. Alternative suppliers gained market share.'
+      }
+    };
+
+    function generateForecast(category, baseSales, season, promotion, holiday) {
+      const baseMultiplier = {
+        'electronics': 1.2,
+        'groceries': 1.0,
+        'clothing': 1.15,
+        'appliances': 1.1
+      };
+
+      const seasonalMultiplier = {
+        'summer': season === 'summer' && category === 'clothing' ? 1.4 : 1.1,
+        'winter': 1.3,
+        'festival': 1.35
+      };
+
+      let totalDemand = baseSales * baseMultiplier[category] * (seasonalMultiplier[season] || 1.0);
+      if (promotion) totalDemand *= 1.15;
+      if (holiday) totalDemand *= 1.25;
+
+      const weeklyData = [];
+      for (let i = 0; i < 8; i++) {
+        const variation = Math.sin(i / 4) * totalDemand * 0.1;
+        const weekDemand = Math.round(totalDemand / 8 + variation);
+        weeklyData.push({
+          week: i + 1,
+          value: Math.max(0, weekDemand),
+          confidence: Math.round(94 - i * 0.5)
+        });
+      }
+
+      return {
+        total: Math.round(totalDemand),
+        month: Math.round(totalDemand * 4),
+        confidence: 94,
+        weeklyData: weeklyData
+      };
+    }
+
+    function renderDemandChart(weeklyData) {
+      const ctx = document.getElementById('demand-chart');
+      if (demandChart) demandChart.destroy();
+
+      const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 300);
+      gradient.addColorStop(0, 'rgba(99, 102, 241, 0.5)');
+      gradient.addColorStop(1, 'rgba(139, 92, 246, 0.1)');
+
+      demandChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: weeklyData.map(d => `Week ${d.week}`),
+          datasets: [{
+            label: 'Predicted Demand',
+            data: weeklyData.map(d => d.value),
+            borderColor: '#6366F1',
+            backgroundColor: gradient,
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#EC4899',
+            pointBorderColor: '#ffffff',
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            pointBorderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: 'rgba(255, 255, 255, 0.8)', font: { size: 12 } } }
+          },
+          scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: 'rgba(255, 255, 255, 0.7)' } },
+            x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: 'rgba(255, 255, 255, 0.7)' } }
+          }
+        }
+      });
+    }
+
+    function populateDemandTable(weeklyData) {
+      const tableBody = document.getElementById('demand-table');
+      tableBody.innerHTML = weeklyData.map(data => `
+        <tr>
+          <td class="py-3 px-4">Week ${data.week}</td>
+          <td class="text-right py-3 px-4 font-semibold text-indigo-300">${data.value.toLocaleString()} units</td>
+          <td class="text-right py-3 px-4"><span class="px-2 py-1 rounded text-xs font-medium ${data.confidence > 90 ? 'bg-green-500/20 text-green-300' : 'bg-yellow-500/20 text-yellow-300'}">${data.confidence}%</span></td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('demand-predict-btn').addEventListener('click', function() {
+      const category = document.getElementById('demand-category-select').value;
+      const sales = parseInt(document.getElementById('demand-sales-input').value) || 1000;
+      const season = document.getElementById('demand-season-select').value;
+      const promotion = document.getElementById('demand-promotion-check').checked;
+      const holiday = document.getElementById('demand-holiday-check').checked;
+
+      this.disabled = true;
+      document.getElementById('demand-predict-btn-text').textContent = 'Analyzing...';
+
+      setTimeout(() => {
+        const forecast = generateForecast(category, sales, season, promotion, holiday);
+        document.getElementById('demand-forecast-value').textContent = forecast.total.toLocaleString();
+        document.getElementById('demand-month-value').textContent = forecast.month.toLocaleString();
+        document.getElementById('demand-confidence-value').textContent = forecast.confidence + '%';
+        renderDemandChart(forecast.weeklyData);
+        populateDemandTable(forecast.weeklyData);
+        document.getElementById('demand-placeholder-container').classList.add('hidden');
+        document.getElementById('demand-results-container').classList.remove('hidden');
+        this.disabled = false;
+        document.getElementById('demand-predict-btn-text').textContent = 'Generate Forecast';
+      }, 1500);
+    });
+
+    // Price comparison functionality
+    document.querySelectorAll('.price-product-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.price-product-btn').forEach(b => b.classList.remove('active', 'border-indigo-500'));
+        this.classList.add('active');
+        this.style.borderBottom = '2px solid #6366F1';
+        renderPriceChart(this.dataset.product);
+      });
+    });
+
+    function renderPriceChart(productKey) {
+      const product = priceData[productKey];
+      const countries = ['usa', 'india', 'uk', 'japan', 'germany', 'brazil'];
+      const pricesUSD = countries.map(country => {
+        const p = product[country];
+        return p.local * (p.rate || 1);
+      });
+
+      const ctx = document.getElementById('price-chart');
+      if (priceChart) priceChart.destroy();
+
+      const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 300);
+      gradient.addColorStop(0, 'rgba(236, 72, 153, 0.5)');
+      gradient.addColorStop(1, 'rgba(236, 72, 153, 0.1)');
+
+      priceChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: countries.map(c => product[c].country),
+          datasets: [{
+            label: 'Price (USD)',
+            data: pricesUSD,
+            backgroundColor: gradient,
+            borderColor: '#EC4899',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: 'rgba(255, 255, 255, 0.8)', font: { size: 12 } } }
+          },
+          scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: 'rgba(255, 255, 255, 0.7)' } },
+            x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: 'rgba(255, 255, 255, 0.7)' } }
+          }
+        }
+      });
+
+      // Populate price table
+      const tableBody = document.getElementById('price-table');
+      const usaPrice = product.usa.local;
+      tableBody.innerHTML = countries.map(country => {
+        const p = product[country];
+        const usd = p.local * (p.rate || 1);
+        const diff = ((usd - usaPrice) / usaPrice * 100).toFixed(1);
+        const sign = diff > 0 ? '+' : '';
+        return `
+          <tr>
+            <td class="py-3 px-4">${p.country}</td>
+            <td class="text-right py-3 px-4 font-semibold">${p.local.toLocaleString()} ${p.currency}</td>
+            <td class="text-right py-3 px-4">${p.currency}</td>
+            <td class="text-right py-3 px-4 font-semibold text-indigo-300">$${usd.toFixed(2)}</td>
+            <td class="text-right py-3 px-4"><span class="px-2 py-1 rounded text-xs font-medium ${diff > 0 ? 'bg-red-500/20 text-red-300' : 'bg-green-500/20 text-green-300'}">${sign}${diff}%</span></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Crisis analysis functionality
+    document.querySelectorAll('.crisis-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.crisis-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        this.style.borderBottom = '2px solid #6366F1';
+        renderCrisisChart(this.dataset.crisis);
+      });
+    });
+
+    function renderCrisisChart(crisisKey) {
+      const crisis = crisisData[crisisKey];
+      document.getElementById('crisis-demand-change').textContent = crisis.demandChange;
+      document.getElementById('crisis-price-change').textContent = crisis.priceChange;
+      document.getElementById('crisis-duration').textContent = crisis.duration;
+
+      const ctx = document.getElementById('crisis-chart');
+      if (crisisChart) crisisChart.destroy();
+
+      const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 300);
+      gradient.addColorStop(0, 'rgba(6, 182, 212, 0.5)');
+      gradient.addColorStop(1, 'rgba(6, 182, 212, 0.1)');
+
+      const baselinePrice = 100;
+      const pricePoints = [baselinePrice, baselinePrice, baselinePrice * 1.15, baselinePrice * 1.35, baselinePrice * 1.25, baselinePrice * 1.08, baselinePrice * 0.95];
+
+      crisisChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Week -2', 'Week -1', 'Crisis Start', 'Peak', 'Week +2', 'Week +4', 'Recovery'],
+          datasets: [{
+            label: 'Price Index',
+            data: pricePoints,
+            borderColor: '#06B6D4',
+            backgroundColor: gradient,
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#F59E0B',
+            pointBorderColor: '#ffffff',
+            pointRadius: 6,
+            pointBorderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: 'rgba(255, 255, 255, 0.8)', font: { size: 12 } } }
+          },
+          scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: 'rgba(255, 255, 255, 0.7)' } },
+            x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: 'rgba(255, 255, 255, 0.7)' } }
+          }
+        }
+      });
+
+      document.getElementById('crisis-details').innerHTML = `
+        <h4 class="text-white font-semibold mb-3">${crisis.icon} ${crisis.name}</h4>
+        <p class="text-white/70 text-sm mb-4">${crisis.details}</p>
+        <div class="flex gap-4 text-xs">
+          <div><span class="text-white/50">Affected Products:</span> <span class="text-white">${crisis.affected}</span></div>
+        </div>
+      `;
+    }
+
+    function switchSection(sectionId) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(sectionId).classList.add('active');
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+      document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', function() {
+        switchSection(this.dataset.section);
+      });
+    });
+
+    async function onConfigChange(config) {
+      const title = config.app_title || defaultConfig.app_title;
+      const subtitle = config.subtitle_text || defaultConfig.subtitle_text;
+      const font = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+
+      document.getElementById('app-title').textContent = title;
+      document.getElementById('subtitle').textContent = subtitle;
+      document.getElementById('how-it-works-title').textContent = config.how_it_works_title || defaultConfig.how_it_works_title;
+      document.getElementById('demand-predict-btn-text').textContent = config.predict_button_text || defaultConfig.predict_button_text;
+      document.body.style.fontFamily = `${font}, sans-serif`;
+      document.getElementById('app-title').style.fontSize = `${fontSize * 2.5}px`;
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          { get: () => config.primary_color || defaultConfig.primary_color, set: (value) => { config.primary_color = value; window.elementSdk.setConfig({ primary_color: value }); } },
+          { get: () => config.secondary_color || defaultConfig.secondary_color, set: (value) => { config.secondary_color = value; window.elementSdk.setConfig({ secondary_color: value }); } },
+          { get: () => config.accent_color || defaultConfig.accent_color, set: (value) => { config.accent_color = value; window.elementSdk.setConfig({ accent_color: value }); } }
+        ],
+        borderables: [],
+        fontEditable: { get: () => config.font_family || defaultConfig.font_family, set: (value) => { config.font_family = value; window.elementSdk.setConfig({ font_family: value }); } },
+        fontSizeable: { get: () => config.font_size || defaultConfig.font_size, set: (value) => { config.font_size = value; window.elementSdk.setConfig({ font_size: value }); } }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ['app_title', config.app_title || defaultConfig.app_title],
+        ['subtitle_text', config.subtitle_text || defaultConfig.subtitle_text],
+        ['predict_button_text', config.predict_button_text || defaultConfig.predict_button_text],
+        ['how_it_works_title', config.how_it_works_title || defaultConfig.how_it_works_title]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({ defaultConfig, onConfigChange, mapToCapabilities, mapToEditPanelValues });
+    }
+
+    // Initialize price chart on load
+    window.addEventListener('load', () => {
+      renderPriceChart('iphone');
+      renderCrisisChart('covid');
+    });
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9da178fcc4674917',t:'MTc3MzEzNjgyOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
